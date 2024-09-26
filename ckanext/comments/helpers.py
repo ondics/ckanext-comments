@@ -10,6 +10,10 @@ from ckanext.comments.model.thread import Subject
 from . import config
 from .model import Comment
 
+import logging
+
+log = logging.getLogger(__name__)
+
 _helpers = {}
 
 
@@ -68,3 +72,11 @@ def subject_of(id_: str) -> Optional[Subject]:
 @helper
 def enable_default_dataset_comments() -> bool:
     return config.use_default_dataset_comments()
+
+
+@helper
+def show_comment_list(status):
+    test =  tk.get_action("comments_comment_list")(data_dict={
+        "state": status
+    })
+    return test

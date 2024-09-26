@@ -10,6 +10,10 @@ from ckanext.comments.model.dictize import get_dictizer
 
 from .. import config, signals
 
+import logging
+
+log = logging.getLogger(__name__)
+
 _actions = {}
 
 
@@ -279,3 +283,31 @@ def comment_update(context, data_dict):
 
     signals.updated.send(comment.thread_id, comment=comment_dict)
     return comment_dict
+
+
+@action
+def comment_list(context, data_dict):
+    """Show list of draft comments"""
+
+    # tk.check_access("comments_comment_show", context, data_dict)
+    comments = (
+        context["session"]
+        .query(Comment, Thread.subject_id)
+        .join(Thread, Comment.thread_id == Thread.id)
+        .filter(Comment.state == data_dict["state"])
+        .all()
+    )
+
+    comments_list = []
+
+    comments_list = [
+        {
+            **get_dictizer(type(comment))(comment, context),
+            'package_id': subject_id,
+            'author_name': tk.get_action('user_show')(data_dict={'id': comment.author_id}).get('name'),
+            'author_fullname': tk.get_action('user_show')(data_dict={'id': comment.author_id}).get('fullname'),
+        }
+        for comment, subject_id in comments
+    ]
+
+    return comments_list
