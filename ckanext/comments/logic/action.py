@@ -157,9 +157,12 @@ def comment_create(context, data_dict):
                 {"reply_to_id": ["Coment is owned by different thread"]}
             )
 
+    log.debug("Empfangenes data_dict: %s", data_dict)
+
     comment = Comment(
         thread_id=thread_dict["id"],
         content=data_dict["content"],
+        author_email=data_dict["author_email"],
         author_type=data_dict["author_type"],
         extras=data_dict["extras"],
         author_id=author_id,

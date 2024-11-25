@@ -6,6 +6,8 @@ import ckanext.comments.logic.action as action
 import ckanext.comments.logic.auth as auth
 import ckanext.comments.logic.validators as validators
 
+from ckanext.comments import blueprint
+
 try:
     config_declarations = tk.blanket.config_declarations
 except AttributeError:
@@ -19,6 +21,7 @@ class CommentsPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IActions)
     plugins.implements(plugins.ITemplateHelpers)
     plugins.implements(plugins.IValidators)
+    plugins.implements(plugins.IBlueprint)
 
     # IConfigurer
 
@@ -46,3 +49,8 @@ class CommentsPlugin(plugins.SingletonPlugin):
 
     def get_validators(self):
         return validators.get_validators()
+
+    # IBLueprint
+
+    def get_blueprint(self):
+        return blueprint.get_blueprints()

@@ -4,7 +4,7 @@ import logging
 from datetime import datetime
 from typing import Any, Callable, Optional
 
-from sqlalchemy import Column, DateTime, ForeignKey, Text
+from sqlalchemy import types, Column, DateTime, ForeignKey, Text
 from sqlalchemy.dialects.postgresql import JSONB
 
 from sqlalchemy.orm import foreign, relationship
@@ -38,6 +38,8 @@ class Comment(Base):
 
     content = Column(Text, nullable=False)
 
+    author_email = Column('author_email', types.UnicodeText, nullable=False)
+    # user_name = Column(Text, nullable=False)
     author_id = Column(Text, nullable=False)
     author_type = Column(Text, nullable=False)
 

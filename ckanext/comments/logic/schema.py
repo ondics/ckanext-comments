@@ -47,6 +47,8 @@ def comment_create(
     ignore_missing,
     convert_to_json_if_string,
     dict_only,
+    email_validator,
+    strip_value
 ):
     return {
         "subject_id": [not_empty, unicode_safe],
@@ -56,6 +58,12 @@ def comment_create(
         ],
         "content": [
             not_empty,
+        ],
+        "author_email": [
+            ignore_missing, 
+            unicode_safe, 
+            strip_value,
+            email_validator,
         ],
         "author_id": [
             ignore_missing,

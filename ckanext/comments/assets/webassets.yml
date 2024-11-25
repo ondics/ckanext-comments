@@ -12,3 +12,15 @@ comments-thread-styles:
   output: ckanext-comments/%(version)s-comments-thread-styles.css
   contents:
     - css/comments-thread.css
+
+comments-email:
+  filter: rjsmin
+  output: ckanext-comments/%(version)s-comments-email.js
+  contents:
+    - js/comments-email.js
+
+comments-confirmation:
+  filter: rjsmin
+  output: ckanext-comments/%(version)s-comments-confirmation.js
+  contents:
+    - js/comments-confirmation.js

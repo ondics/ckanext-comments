@@ -5,6 +5,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+
+## 01-10-2024:
+
+* ENH: Übersetzungen aktualisiert von englisch nach deutsch
+
+## 30-09-2024:
+
+* ENH: E-Mail Validierung hinzugefügt über PIN
+* ENH: PIN wird verschlüsselt als Server seitige Session gespeichert
+
+## 25-09-2024:
+
+* ENH: Kommentar admin Dashboard geschrieben
+
+
 <!-- insertion marker -->
 ## [v0.3.1](https://github.com/DataShades/ckanext-comments/releases/tag/v0.3.1) - 2023-10-25
 
