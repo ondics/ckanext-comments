@@ -23,10 +23,12 @@ log = logging.getLogger(__name__)
 Author = model.User
 AuthorGetter = Callable[[str], Optional[Author]]
 
+def get_guest_author(name):
+    return name
 
 class Comment(Base):
     __tablename__ = "comments_comments"
-    _author_getters: dict[str, AuthorGetter] = {"user": model.User.get}
+    _author_getters: dict[str, AuthorGetter] = {"user": model.User.get, "guest": get_guest_author}
 
     class State:
         draft = "draft"
@@ -39,8 +41,8 @@ class Comment(Base):
     content = Column(Text, nullable=False)
 
     author_email = Column('author_email', types.UnicodeText, nullable=False)
-    # user_name = Column(Text, nullable=False)
-    author_id = Column(Text, nullable=False)
+    guest_user = Column(Text, nullable=True)
+    author_id = Column(Text, nullable=True)
     author_type = Column(Text, nullable=False)
 
     state = Column(Text, nullable=False, default=State.draft)
@@ -71,6 +73,7 @@ class Comment(Base):
             f"id={self.id!r},"
             f"thread_id={self.thread_id!r},"
             f"author_id={self.author_id!r},"
+            f"guest_user={self.guest_user!r},"
             f"author_type={self.author_type!r},"
             f"reply_to_id={self.reply_to_id!r},"
             ")"
@@ -101,4 +104,6 @@ class Comment(Base):
         except KeyError:
             log.error("Unknown subject type: %s", self.author_type)
             raise UnsupportedAuthorType(self.author_type)
-        return getter(self.author_id)  # type: ignore
+        if self.author_type == "guest":
+            return getter(self.guest_user)  # `guest_user` verwenden statt `author_id`
+        return getter(self.author_id)  # Für "user", normale Logik mit `author_id`

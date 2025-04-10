@@ -68,7 +68,7 @@ def comment_create(
         "author_id": [
             ignore_missing,
         ],
-        "author_type": [default("user"), one_of(["user"])],
+        "author_type": [default("user"), one_of(["user", "guest"])],
         "reply_to_id": [
             ignore_missing,
             tk.get_validator("comments_comment_exists"),

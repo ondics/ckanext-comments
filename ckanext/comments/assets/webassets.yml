@@ -7,6 +7,15 @@ comments-thread:
     preload:
       - base/main
 
+comments-thread-auth:
+  filter: rjsmin
+  output: ckanext-comments/%(version)s-comments-thread-auth.js
+  contents:
+    - js/comments-thread-auth.js
+  extra:
+    preload:
+      - base/main
+
 comments-thread-styles:
   filter: cssrewrite
   output: ckanext-comments/%(version)s-comments-thread-styles.css

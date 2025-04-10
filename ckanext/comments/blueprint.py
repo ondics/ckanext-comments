@@ -5,6 +5,7 @@ from flask import Flask, request, jsonify, render_template, Blueprint, session
 import re
 import random
 import logging
+from ckan.lib.helpers import helper_functions as h
 
 log = logging.getLogger(__name__)
 
@@ -15,8 +16,12 @@ def request_pin():
     email = data.get('email')
 
     user = toolkit.g.userobj
-    author_id = user.id
-    author_name = user.name
+    if user:
+        author_id = user.id
+        author_name = user.name
+    else: 
+        author_id = data.get('name')
+        author_name = data.get('name')
 
     if not is_valid_email(email):
         return jsonify({"error": "Ungültige E-Mail-Adresse."}), 400
@@ -32,7 +37,7 @@ def request_pin():
 
     # Sende die Bestätigungsmail
     subject = (f"{author_name} - Bestätige deine E-Mail-Adresse")
-    body = f"Bitte geben den folgenden PIN ein, um deine E-Mail-Adresse zu bestätigen und den Kommentar zu speichern: {pin}"
+    body = f"Bitte geben Sie den folgenden PIN ein, um deine E-Mail-Adresse zu bestätigen und den Kommentar zu speichern: {pin}"
     body_html = body
 
     try:
@@ -44,7 +49,7 @@ def request_pin():
             body_html = body_html
             )
     except mailer.MailerException as e:
-        h.flash_error(_(u'Error sending the email. Try again later '
+        h.flash_error(toolkit._(u'Error sending the email. Try again later '
                         'or contact an administrator for help'))
         log.exception(e)
 

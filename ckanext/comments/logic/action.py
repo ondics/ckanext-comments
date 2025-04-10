@@ -3,6 +3,7 @@ from datetime import datetime
 import ckan.lib.dictization as d
 import ckan.plugins.toolkit as tk
 from ckan.logic import validate
+import ckan.authz as authz
 
 import ckanext.comments.logic.schema as schema
 from ckanext.comments.model import Comment, Thread
@@ -128,6 +129,16 @@ def comment_create(context, data_dict):
     """
     tk.check_access("comments_comment_create", context, data_dict)
 
+    if authz.auth_is_anon_user(context):
+        data_dict["author_type"] = "guest"
+    else:
+        data_dict["author_type"] = "user"
+
+    log.debug("################################################################# comment_create context: ")
+    log.debug(context)
+    log.debug("################################################################# comment_create data_dict: ")
+    log.debug(data_dict)
+
     thread_data = {
         "subject_id": data_dict["subject_id"],
         "subject_type": data_dict["subject_type"],
@@ -142,7 +153,11 @@ def comment_create(context, data_dict):
         )
 
     author_id = data_dict.get("author_id")
-    can_set_author_id = context.get("ignore_auth") or context["auth_user_obj"].sysadmin
+    guest_user = data_dict.get("guest_user")
+    auth_user = context.get("auth_user_obj")
+    ignore_auth = context.get("ignore_auth", False)
+
+    can_set_author_id = ignore_auth or (auth_user and getattr(auth_user, "sysadmin", False))
 
     if not author_id or not can_set_author_id:
         author_id = context["user"]
@@ -154,8 +169,15 @@ def comment_create(context, data_dict):
         )
         if parent["thread_id"] != thread_dict["id"]:
             raise tk.ValidationError(
-                {"reply_to_id": ["Coment is owned by different thread"]}
+                {"reply_to_id": ["Comment is owned by different thread"]}
             )
+    if authz.auth_is_anon_user(context):
+        data_dict["author_type"] = "guest"
+    else:
+        data_dict["author_type"] = "user"
+
+    log.debug("################################################################# comment_create data_dict[author_type]: ")
+    log.debug(data_dict["author_type"])
 
     log.debug("Empfangenes data_dict: %s", data_dict)
 
@@ -166,6 +188,7 @@ def comment_create(context, data_dict):
         author_type=data_dict["author_type"],
         extras=data_dict["extras"],
         author_id=author_id,
+        guest_user=guest_user,
         reply_to_id=reply_to_id,
     )
 
@@ -173,7 +196,12 @@ def comment_create(context, data_dict):
     if author is None:
         raise tk.ObjectNotFound("Cannot find author for comment")
     # make sure we are not messing up with name_or_id
-    comment.author_id = author.id
+    if comment.author_type == "user":
+        comment.author_id = author.id
+        comment.guest_user = None  # Gästename darf nicht gesetzt sein, wenn es ein User ist
+    else:
+        comment.author_id = None  # Keine User-ID setzen, wenn es ein Gast ist
+        comment.guest_user = author  # Der Gastname bleibt erhalten
 
     if not config.approval_required():
         comment.approve()
@@ -307,8 +335,14 @@ def comment_list(context, data_dict):
         {
             **get_dictizer(type(comment))(comment, context),
             'package_id': subject_id,
-            'author_name': tk.get_action('user_show')(data_dict={'id': comment.author_id}).get('name'),
-            'author_fullname': tk.get_action('user_show')(data_dict={'id': comment.author_id}).get('fullname'),
+            'author_name': (
+                tk.get_action('user_show')(data_dict={'id': comment.author_id}).get('name')
+                if comment.author_id else comment.guest_user or "Gast"
+            ),
+            'author_fullname': (
+                tk.get_action('user_show')(data_dict={'id': comment.author_id}).get('fullname')
+                if comment.author_id else comment.guest_user or "Gast"
+            ),
         }
         for comment, subject_id in comments
     ]

@@ -85,6 +85,7 @@ ckan.module("comments-thread", function ($) {
       e.preventDefault();
     
       const email = $('#authoremail').val(); // E-Mail von der Eingabe im Modal
+      const name = $('#guestuser').val(); // Nutzername von der Eingabe im Modal
       if (!this._isValidEmail(email)) {
         alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
         return;
@@ -95,11 +96,12 @@ ckan.module("comments-thread", function ($) {
         url: '/api/request_pin', // API-Endpunkt, der die PIN generiert und sendet
         method: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ email }), // E-Mail an den Server senden
+        data: JSON.stringify({ email, name }), // E-Mail an den Server senden
         success: function () {
           $('#emailModal').modal('hide'); // Schließe das E-Mail-Modal
           $('#pinModal').modal('show'); // Zeige das PIN-Modal an
           $('#author_email').val(email); // Setze die E-Mail im versteckten Feld
+          $('#guest_user').val(name); // Setze die E-Mail im versteckten Feld
         },
         error: function () {
           alert('Fehler beim Anfordern der PIN. Bitte versuchen Sie es erneut.');
@@ -116,19 +118,20 @@ ckan.module("comments-thread", function ($) {
         return;
       }
     
-      const { content, email, reply_to_id } = this.e; // Gespeicherte Daten
+      const { content, email, name, reply_to_id } = this.e; // Gespeicherte Daten
     
       // PIN validieren und Reply speichern
       $.ajax({
         url: '/api/verify_pin',
         method: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ email, pin }),
+        data: JSON.stringify({ email, name, pin }),
         success: function () {
           // PIN bestätigt - Reply speichern
           this._saveComment({
             content: content,
             author_email: email,
+            guest_user: name,
             reply_to_id: reply_to_id
           });
       
@@ -172,6 +175,7 @@ ckan.module("comments-thread", function ($) {
     
       const pin = $('#pin-input').val(); // Eingabe aus dem PIN-Feld
       const email = $('#author_email').val(); // Bereits gespeicherte E-Mail im Formular
+      const name = $('#guest_user').val(); // Bereits gespeicherte E-Mail im Formular
       const formElement = document.getElementById("main-form");
     
       // Überprüfe die PIN auf dem Server
@@ -179,13 +183,14 @@ ckan.module("comments-thread", function ($) {
         url: '/api/verify_pin',
         method: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ pin, email }), // Sende PIN und E-Mail
+        data: JSON.stringify({ pin, email, name }), // Sende PIN und E-Mail
         success: (response) => {
           // Wenn die PIN korrekt ist, speichere den Kommentar
           const data = new FormData(formElement); // Hole Formulardaten
           this._saveComment({
             content: data.get("content"),
             author_email: data.get("author_email"),
+            guest_user: data.get("guest_user"),
             create_thread: true,
           });
           $('#pinModal').modal('hide'); // Schließe das PIN-Modal
@@ -362,7 +367,7 @@ ckan.module("comments-thread", function ($) {
     _onSubmit: function (e) {
       e.preventDefault();
       var data = new FormData(e.target);
-      this._saveComment({ content: data.get("content"), author_email: data.get("author_email"), create_thread: true });
+      this._saveComment({ content: data.get("content"), author_email: data.get("author_email"), guest_user: data.get("guest_user"), create_thread: true });
     },
     _saveComment: function (data) {
       if (!data.content) {

@@ -38,6 +38,7 @@ def get_auth_functions():
 
 
 @auth
+@tk.auth_allow_anonymous_access
 def thread_create(context, data_dict):
     return {"success": True}
 
@@ -54,11 +55,13 @@ def thread_delete(context, data_dict):
 
 
 @auth
+@tk.auth_allow_anonymous_access
 def comment_create(context, data_dict):
     return {"success": True}
 
 
 @auth
+@tk.auth_allow_anonymous_access
 def reply_create(context, data_dict):
     return {"success": True}
 

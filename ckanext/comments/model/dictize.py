@@ -28,6 +28,8 @@ _dictizers: dict[type, Callable[..., dict[str, Any]]] = defaultdict(
     lambda: d.table_dictize
 )
 
+_dictizers[str] = lambda name, context: {"name": name, "type": "guest"}
+
 log = logging.getLogger(__name__)
 
 

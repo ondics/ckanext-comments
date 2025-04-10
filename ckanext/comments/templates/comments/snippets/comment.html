@@ -11,7 +11,7 @@
 
             <div class="comment-meta">
                 <div class="author-name">
-                    {{ comment.author.fullname or comment.author.name }}
+                    {{ comment.author.fullname or comment.author.name or comment.author.id }}
                 </div>
                 <div class="comment-date">
                     {{ h.time_ago_from_timestamp(comment.modified_at or comment.created_at) }}
