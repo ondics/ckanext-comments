@@ -134,11 +134,6 @@ def comment_create(context, data_dict):
     else:
         data_dict["author_type"] = "user"
 
-    log.debug("################################################################# comment_create context: ")
-    log.debug(context)
-    log.debug("################################################################# comment_create data_dict: ")
-    log.debug(data_dict)
-
     thread_data = {
         "subject_id": data_dict["subject_id"],
         "subject_type": data_dict["subject_type"],
@@ -177,11 +172,6 @@ def comment_create(context, data_dict):
         data_dict["author_type"] = "user"
         author = authz._get_user(author_id)
         data_dict["author_email"] = author.email
-
-    log.debug("################################################################# comment_create data_dict[author_type]: ")
-    log.debug(data_dict["author_type"])
-
-    log.debug("Empfangenes data_dict: %s", data_dict)
 
     comment = Comment(
         thread_id=thread_dict["id"],
