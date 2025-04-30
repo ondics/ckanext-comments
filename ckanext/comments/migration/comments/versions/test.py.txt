@@ -1,0 +1,27 @@
+"""make author_id nullable
+
+Revision ID: 
+Revises: 
+Create Date: 2025-04-30
+
+"""
+from alembic import op
+import sqlalchemy as sa
+
+# Revision identifiers, used by Alembic.
+revision = ''
+down_revision = ''
+branch_labels = None
+depends_on = None
+
+
+def upgrade():
+    op.alter_column('comments_comment', 'author_id',
+                    existing_type=sa.Text(),
+                    nullable=True)
+
+
+def downgrade():
+    op.alter_column('comments_comment', 'author_id',
+                    existing_type=sa.Text(),
+                    nullable=False)

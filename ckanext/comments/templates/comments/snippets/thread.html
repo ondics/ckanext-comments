@@ -7,14 +7,7 @@ subject_type - type of the subject for thread
 
 {% set thread = h.comments_thread_for(subject_id, subject_type) %}
 
-{% if g.user %}
-    {% asset 'comments/comments-thread-auth' %}
-{% else %}
-    {% asset 'comments/comments-thread' %}
-{% endif %}
-{% asset 'comments/comments-thread-styles' %}
-
-<div data-module="comments-thread" data-module-subject-id="{{ thread.subject_id }}" data-module-subject-type="{{ thread.subject_type }}">
+<div {% if g.user %}data-module="comments-thread-auth"{% else %}data-module="comments-thread"{% endif %} data-module-subject-id="{{ thread.subject_id }}" data-module-subject-type="{{ thread.subject_type }}">
     {% if thread.comments %}
         <h3 class="heading">{{ _('Comments') }}</h3>
         {% snippet 'comments/snippets/comments_list.html', comments=thread.comments %}

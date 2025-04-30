@@ -175,6 +175,8 @@ def comment_create(context, data_dict):
         data_dict["author_type"] = "guest"
     else:
         data_dict["author_type"] = "user"
+        author = authz._get_user(author_id)
+        data_dict["author_email"] = author.email
 
     log.debug("################################################################# comment_create data_dict[author_type]: ")
     log.debug(data_dict["author_type"])
@@ -192,16 +194,16 @@ def comment_create(context, data_dict):
         reply_to_id=reply_to_id,
     )
 
-    author = comment.get_author()
-    if author is None:
-        raise tk.ObjectNotFound("Cannot find author for comment")
     # make sure we are not messing up with name_or_id
     if comment.author_type == "user":
+        author = comment.get_author()
+        if author is None:
+            raise tk.ObjectNotFound("Cannot find author for comment")
         comment.author_id = author.id
         comment.guest_user = None  # Gästename darf nicht gesetzt sein, wenn es ein User ist
     else:
         comment.author_id = None  # Keine User-ID setzen, wenn es ein Gast ist
-        comment.guest_user = author  # Der Gastname bleibt erhalten
+        comment.guest_user = guest_user or data_dict.get("guest_user")
 
     if not config.approval_required():
         comment.approve()

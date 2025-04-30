@@ -7,7 +7,7 @@ Create Date: 2024-10-07 09:20:07.820195
 """
 from alembic import op
 import sqlalchemy as sa
-
+from sqlalchemy import inspect
 
 # revision identifiers, used by Alembic.
 revision = 'c305838795ff'
@@ -17,14 +17,17 @@ depends_on = None
 
 
 def upgrade():
-    op.add_column(
-        "comments_comments",
-        sa.Column("author_email", sa.UnicodeText, nullable=False)
-    )
-    # op.add_column(
-    #     "comments_comments",
-    #     sa.Column("user_name", sa.UnicodeText, nullable=False)
-    # )
+    bind = op.get_bind()
+    inspector = inspect(bind)
+    columns = [col["name"] for col in inspector.get_columns("comments_comments")]
+
+    if "author_email" not in columns:
+        op.add_column(
+            "comments_comments",
+            sa.Column("author_email", sa.UnicodeText, nullable=False)
+        )
+    else:
+        print("Spalte 'author_email' existiert bereits – wird nicht erneut hinzugefügt.")
 
 
 def downgrade():

@@ -6,3 +6,17 @@
     {% snippet 'comments/snippets/thread.html', subject_id=pkg.id, subject_type='package' %}
   {% endif %}
 {% endblock primary_content_inner %}
+
+{%- block scripts %}
+{{ super() }}
+{% if g.user %}
+    {% asset 'comments/comments-thread-auth' %}
+{% else %}
+    {% asset 'comments/comments-thread' %}
+{% endif %}
+{% endblock -%}
+
+{% block styles %}
+  {{ super() }}
+  {% asset 'comments/comments-thread-styles' %}
+{% endblock %}

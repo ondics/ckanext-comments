@@ -8,9 +8,6 @@ ckan.module("comments-thread-auth", function ($) {
         ajaxReload: null,
       },
       initialize: function () {
-        alert("Kommentar wurde abgesendet!");
-        console.log("JavaScript-Modul wird initialisiert 9uuiu9iu");
-        console.trace("Kommentar speichern");
         // Hier sicherstellen, dass jQuery funktioniert
         if (typeof $ !== "function") {
           console.error("jQuery is not defined");
