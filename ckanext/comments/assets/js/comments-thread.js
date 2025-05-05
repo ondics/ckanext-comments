@@ -66,20 +66,6 @@ ckan.module("comments-thread", function ($) {
       // Öffne das Modal für die E-Mail-Eingabe
       $('#emailModal').modal('show'); 
     },
-    // _onConfirmEmail: function (e) {
-    //   const email = $('#authoremail').val(); // E-Mail von der Eingabe im Modal
-    //   if (!this._isValidEmail(email)) {
-    //     alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
-    //     return;
-    //   }
-    //   $('#author_email').val(email); // E-Mail im versteckten Feld des Formulars setzen
-    //   $('#emailModal').modal('hide'); // Schließe das Modal
-
-    //   // Jetzt das ursprüngliche Formular absenden
-    //   const formElement = document.getElementById("main-form");
-    //   const data = new FormData(formElement); // FormData direkt vom Form-Element erstellen
-    //   this._saveComment({ content: data.get("content"), author_email: data.get("author_email"), create_thread: true });
-    // },
 
     _onConfirmEmail: function (e) {
       e.preventDefault();
@@ -215,7 +201,7 @@ ckan.module("comments-thread", function ($) {
     
       const pin = $('#pin-input').val(); // Eingabe aus dem PIN-Feld
       const email = $('#author_email').val(); // Bereits gespeicherte E-Mail im Formular
-      const name = $('#guest_user').val(); // Bereits gespeicherte E-Mail im Formular
+      const name = $('#guest_user').val(); // Bereits gespeicherter Gastautor Name im Formular
       const formElement = document.getElementById("main-form");
     
       // Überprüfe die PIN auf dem Server
@@ -318,6 +304,7 @@ ckan.module("comments-thread", function ($) {
       var id = e.currentTarget.dataset.id;
       var comment = $(e.currentTarget).closest(".comment");
       var textarea = $('<textarea rows="5" class="form-control reply-textarea">');
+      // Erstelle ein Eingabefeld für den Gastautor Namen
       var guestUserInput = $('<input>', {
         type: 'text',
         placeholder: this._("Dein Autor Name"),

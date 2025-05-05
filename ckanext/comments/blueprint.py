@@ -88,11 +88,6 @@ def check_guest_user():
     guest_user = data.get('guest_user')
     author_email = data.get('author_email')
 
-    log.debug("####################################### check_guest_user - guest_user")
-    log.debug(guest_user)
-    log.debug("####################################### check_guest_user - author_email")
-    log.debug(author_email)
-
 
     if not guest_user or not author_email:
         return jsonify({'valid': False, 'error': 'Missing data'}), 400
@@ -100,13 +95,8 @@ def check_guest_user():
     # Finde alle Einträge mit diesem Gastnamen
     existing = model.Session.query(Comment).filter_by(author_type='guest', guest_user=guest_user).all()
 
-    log.debug("####################################### check_guest_user - existing")
-    log.debug(existing)
-
     for comment in existing:
         if comment.author_email != author_email:
-            log.debug("####################################### check_guest_user - comment.author_email")
-            log.debug(comment.author_email)
             # Derselbe Benutzername wurde mit einer anderen E-Mail verwendet
             return jsonify({'valid': False, 'error': 'Dieser Gastname ist bereits mit einer anderen E-Mail-Adresse verbunden.'}), 409
 

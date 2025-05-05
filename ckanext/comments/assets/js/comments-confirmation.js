@@ -8,7 +8,6 @@ $(document).ready(function () {
             method: 'GET',
             success: function(response) {
                 alert("Kommentar erfolgreich gespeichert!");
-                // Optional: Weiterleitung oder Anzeige einer Bestätigungsmeldung
             },
             error: function(xhr, status, error) {
                 alert("Fehler bei der Bestätigung des Kommentars.");

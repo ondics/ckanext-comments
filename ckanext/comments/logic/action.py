@@ -117,7 +117,13 @@ def thread_delete(context, data_dict):
     thread_dict = get_dictizer(type(thread))(thread, context)
     return thread_dict
 
+
 def update_guest_user_if_needed(data_dict):
+    '''
+    Überprüft guest user auf Einzigartigkeit.
+    Kommentar wird nicht erstellt, falls bereits ein guest user mit dem eingegebenen Namen 
+    und unterschiedlicher Autor-Email in der Datenbanktabelle vorhanden sind.
+    '''
     if data_dict.get('author_type') != 'guest':
         return
 
@@ -153,9 +159,6 @@ def comment_create(context, data_dict):
         create_thread(bool, optional): create a new thread if it doesn't exist yet
     """
     tk.check_access("comments_comment_create", context, data_dict)
-
-    log.debug("######################################################### comment_create - data_dict")
-    log.debug(data_dict)
 
     if authz.auth_is_anon_user(context):
         data_dict["author_type"] = "guest"

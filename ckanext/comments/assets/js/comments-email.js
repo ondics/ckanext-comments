@@ -18,10 +18,6 @@ document.getElementById('save-button').addEventListener('click', function() {
       // Modal schließen
       $('#emailModal').modal('hide');
   
-      // document.getElementById('main-form').addEventListener('submit', function(event) {
-      //   event.preventDefault(); // Stoppt das Standardformular-Verhalten
-      //   return false;
-      // });
       console.log("############################################ Formular wird gesendet");
       // Originalformular absenden
       document.getElementById('main-form').submit();
