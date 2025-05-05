@@ -90,26 +90,46 @@ ckan.module("comments-thread", function ($) {
         alert("Bitte geben Sie eine gültige E-Mail-Adresse ein.");
         return;
       }
-    
-      // Fordere eine PIN vom Server an
+
+      if (!name) {
+        alert("Bitte geben Sie einen Nutzernamen ein.");
+        return;
+      }
+
+      // Schritt 1: Prüfe, ob der guest_user-Name schon vergeben ist
       $.ajax({
-        url: '/api/request_pin', // API-Endpunkt, der die PIN generiert und sendet
+        url: '/api/check_guest_user',  // Muss serverseitig vorhanden sein
         method: 'POST',
         contentType: 'application/json',
-        data: JSON.stringify({ email, name }), // E-Mail an den Server senden
-        success: function () {
-          $('#emailModal').modal('hide'); // Schließe das E-Mail-Modal
-          $('#pinModal').modal('show'); // Zeige das PIN-Modal an
-          $('#author_email').val(email); // Setze die E-Mail im versteckten Feld
-          $('#guest_user').val(name); // Setze die E-Mail im versteckten Feld
-        },
-        error: function () {
-          alert('Fehler beim Anfordern der PIN. Bitte versuchen Sie es erneut.');
-        }
-      });
-      
-    },
-
+        data: JSON.stringify({ guest_user: name, author_email: email }),
+        success: function (response) {
+          if (!response.valid) {
+            alert("Der angegebene Gastautor wird bereits verwendet. Bitte verwenden Sie einen anderen Namen.");
+            return;
+          }
+    
+        // Fordere eine PIN vom Server an
+        $.ajax({
+          url: '/api/request_pin', // API-Endpunkt, der die PIN generiert und sendet
+          method: 'POST',
+          contentType: 'application/json',
+          data: JSON.stringify({ email, name }), // E-Mail an den Server senden
+          success: function () {
+            $('#emailModal').modal('hide'); // Schließe das E-Mail-Modal
+            $('#pinModal').modal('show'); // Zeige das PIN-Modal an
+            $('#author_email').val(email); // Setze die E-Mail im versteckten Feld
+            $('#guest_user').val(name); // Setze den gast user im versteckten Feld
+          },
+          error: function () {
+            alert('Fehler beim Anfordern der PIN. Bitte versuchen Sie es erneut.');
+          }
+        });
+      },
+      error: function () {
+        alert('Der angegebene Gastautor wird bereits verwendet. Bitte verwenden Sie einen anderen Namen.');
+      }
+    });
+  },
     _onConfirmReplyPin: function (e) {
       e.preventDefault();
       const pin = $('#reply-pin-input').val(); // PIN aus dem Modal
@@ -118,6 +138,7 @@ ckan.module("comments-thread", function ($) {
         return;
       }
     
+      console.log("e", e);
       const { content, email, name, reply_to_id } = this.e; // Gespeicherte Daten
     
       // PIN validieren und Reply speichern
@@ -146,29 +167,48 @@ ckan.module("comments-thread", function ($) {
     },
 
     _onReplySave: function (e) {
-      // PIN anfordern für die angegebene E-Mail-Adresse
+
+      // Schritt 1: Prüfe, ob der guest_user-Name schon vergeben ist
       $.ajax({
-        url: "/api/request_pin",
-        method: "POST",
-        contentType: "application/json",
-        data: JSON.stringify({ email: e.email }),
-        success: function () {
-          console.log("PIN erfolgreich versendet an:", e.email);
-          
-          // Daten für spätere Speicherung merken
+        url: '/api/check_guest_user',  // Muss serverseitig vorhanden sein
+        method: 'POST',
+        contentType: 'application/json',
+        data: JSON.stringify({ guest_user: e.name, author_email: e.email }),
+        success: function (response) {
+          if (!response.valid) {
+            alert("Der angegebene Gastautor wird bereits verwendet. Bitte verwenden Sie einen anderen Namen.");
+            return;
+          }
           this.e = e;
-    
-          // PIN-Eingabemodal öffnen
-          $("#replyPinModal").modal("show");
+          console.log("e", e);
+          console.log("E-Mail", e.email);
+          console.log("Name", e.name);
+          // PIN anfordern für die angegebene E-Mail-Adresse
+          $.ajax({
+            url: "/api/request_pin",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ email: e.email }),
+            success: function () {
+              console.log("PIN erfolgreich versendet an:", e.email);
+              // Daten für spätere Speicherung merken
+              console.log("e", e);
+              this.e = e;
+              // PIN-Eingabemodal öffnen
+              $("#replyPinModal").modal("show");
+            }.bind(this),
+            error: function () {
+              console.error("Fehler beim Senden der PIN.");
+              alert("Die PIN konnte nicht gesendet werden. Bitte versuchen Sie es erneut.");
+            },
+          });
         }.bind(this),
         error: function () {
-          console.error("Fehler beim Senden der PIN.");
-          alert("Die PIN konnte nicht gesendet werden. Bitte versuchen Sie es erneut.");
-        },
+          alert('Der angegebene Gastautor wird bereits verwendet. Bitte verwenden Sie einen anderen Namen.');
+        }
       });
     },
-    
-    
+ 
     // Funktion für die PIN-Bestätigung
     _onConfirmPin: function (e) {
       e.preventDefault();
@@ -210,6 +250,9 @@ ckan.module("comments-thread", function ($) {
         var content = e.currentTarget.querySelector(
           ".reply-textarea-wrapper .reply-textarea"
         ).value;
+        var name = e.currentTarget.querySelector(
+          ".reply-guestuser-input"
+        ).value;
         // Die E-Mail-Adresse aus dem versteckten Feld abrufen
         var email = e.currentTarget.querySelector(
           ".reply-email-input"
@@ -221,6 +264,7 @@ ckan.module("comments-thread", function ($) {
         this._onReplySave({
           content: content,
           reply_to_id: e.target.dataset.id,
+          name: name,
           email: email, // E-Mail hinzufügen
       });
       }
@@ -274,6 +318,11 @@ ckan.module("comments-thread", function ($) {
       var id = e.currentTarget.dataset.id;
       var comment = $(e.currentTarget).closest(".comment");
       var textarea = $('<textarea rows="5" class="form-control reply-textarea">');
+      var guestUserInput = $('<input>', {
+        type: 'text',
+        placeholder: this._("Dein Autor Name"),
+        class: 'form-control reply-guestuser-input',
+      });
       // Erstelle ein Eingabefeld für die E-Mail-Adresse
       var emailInput = $('<input>', {
         type: 'email',
@@ -283,7 +332,11 @@ ckan.module("comments-thread", function ($) {
       comment.find(".comment-footer").append(
         $('<div class="control-full reply-textarea-wrapper">').append(
           textarea,
+          guestUserInput,
           emailInput,
+          $('<p class="modal-comment-warning">').text(
+            'Achtung: Als Gastautor, können Sie Ihren Kommentar hinterher nicht mehr bearbeiten oder löschen!'
+          ),
           $("<div>")
             .addClass("reply-actions")
             .append(

@@ -1,0 +1,25 @@
+{% extends "user/dashboard.html" %}
+
+{% block primary_content_inner %}
+<h2>{{ _("Kommentare") }}</h2>
+<br>
+{% set draft_list = h.comments_show_comment_list("draft") %}
+{% set approved_list = h.comments_show_comment_list("approved") %}
+{% if draft_list %}
+<h3>{{ _("Liste mit Kommentaren im Status Entwurf") }}</h3>
+<div>
+    {% for comment in draft_list %}
+        {% snippet 'comments/snippets/mobidata_comments.html', comment=comment, subject_id=comment['package_id'], subject_type='package', status=comment['state'] %}
+    {% endfor %}
+</div>
+<br>
+{% endif %}
+{% if approved_list %}
+<h3>{{ _("Liste mit Kommentaren im Status Angenommen") }}</h3>
+<div>
+    {% for comment in approved_list %}
+        {% snippet 'comments/snippets/mobidata_comments.html', comment=comment, subject_id=comment['package_id'], subject_type='package', status=comment['state'] %}
+    {% endfor %}
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,8 @@
+{% ckan_extends %}
+
+{% block dashboard_nav_links %}
+{{ super() }}
+{% if (c.userobj.sysadmin) %}
+    {{ h.build_nav_icon('comments_blueprint.dashboard_comments', _('Comments'), icon='comment') }}
+{% endif %}
+{% endblock dashboard_nav_links %}

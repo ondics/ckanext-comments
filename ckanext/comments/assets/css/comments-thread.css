@@ -68,3 +68,13 @@
 .comment .comment-footer .reply-actions .reply-action:last-child {
   margin-inline-end: 0;
 }
+
+.modal-comment-warning {
+  color: #d9534f;
+  font-weight: bold;
+}
+
+a.btn.comment-action,
+a.btn.comment-action:visited {
+    color: #000;
+}

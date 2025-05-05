@@ -5,7 +5,11 @@ from flask import Flask, request, jsonify, render_template, Blueprint, session
 import re
 import random
 import logging
+from ckan.views.user import _extra_template_variables
 from ckan.lib.helpers import helper_functions as h
+from ckan import model
+from ckanext.comments.model import Comment
+import json
 
 log = logging.getLogger(__name__)
 
@@ -79,11 +83,59 @@ def generate_pin():
     """Generiere eine 6-stellige PIN."""
     return f"{random.randint(100000, 999999)}"
 
+def check_guest_user():
+    data = request.get_json()
+    guest_user = data.get('guest_user')
+    author_email = data.get('author_email')
+
+    log.debug("####################################### check_guest_user - guest_user")
+    log.debug(guest_user)
+    log.debug("####################################### check_guest_user - author_email")
+    log.debug(author_email)
+
+
+    if not guest_user or not author_email:
+        return jsonify({'valid': False, 'error': 'Missing data'}), 400
+
+    # Finde alle Einträge mit diesem Gastnamen
+    existing = model.Session.query(Comment).filter_by(author_type='guest', guest_user=guest_user).all()
+
+    log.debug("####################################### check_guest_user - existing")
+    log.debug(existing)
+
+    for comment in existing:
+        if comment.author_email != author_email:
+            log.debug("####################################### check_guest_user - comment.author_email")
+            log.debug(comment.author_email)
+            # Derselbe Benutzername wurde mit einer anderen E-Mail verwendet
+            return jsonify({'valid': False, 'error': 'Dieser Gastname ist bereits mit einer anderen E-Mail-Adresse verbunden.'}), 409
+
+    # Entweder existiert der Name noch nicht oder nur mit derselben E-Mail
+    return jsonify({'valid': True}), 200
+
+def dashboard_comments():
+    context = {u'for_view': True, u'user': toolkit.g.user, u'auth_user_obj': toolkit.g.userobj}
+    data_dict = {u'user_obj': toolkit.g.userobj}
+    extra_vars = _extra_template_variables(context, data_dict)
+    try:
+        toolkit.check_access('sysadmin', context, data_dict)
+    except toolkit.NotAuthorized:
+        return toolkit.abort(403, toolkit._('User not authorized to view page'))
+    
+    return toolkit.render("/user/dashboard_comments.html", extra_vars)
+
+
+blueprint.add_url_rule('/dashboard/comments',
+              view_func=dashboard_comments)
+
 blueprint.add_url_rule('/api/request_pin',
               view_func=request_pin, methods=['POST'])
 
 blueprint.add_url_rule('/api/verify_pin',
               view_func=verify_pin, methods=['POST'])
+
+blueprint.add_url_rule('/api/check_guest_user',
+              view_func=check_guest_user, methods=['POST'])
 
 def get_blueprints():
     return [blueprint]

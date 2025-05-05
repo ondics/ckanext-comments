@@ -65,6 +65,9 @@ def comment_create(
             strip_value,
             email_validator,
         ],
+        "guest_user": [
+            ignore_missing,
+        ],
         "author_id": [
             ignore_missing,
         ],

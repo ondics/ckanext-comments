@@ -6,7 +6,7 @@
     <div class="comment-heading">
         <div class="comment-authored">
             <div class="author-avatar">
-                {{ h.user_image(comment.author.name, size=26) }}
+                {% if comment.author_type == "user" %} {{ h.user_image(comment.author.name, size=26) }} {% else %} <i class="fa-regular fa-circle-user"></i> {% endif %}
             </div>
 
             <div class="comment-meta">
@@ -43,7 +43,7 @@
             {% endif %}
 
             {% if h.check_access('comments_comment_delete', comment) %}
-                <button aria-label="remove comment" type="button" class="btn btn-remove comment-action" data-bs-toggle="modal" data-bs-target="#confirmation-modal-{{ comment.id }}">
+                <button aria-label="remove comment" type="button" class="btn btn-danger comment-action" data-bs-toggle="modal" data-bs-target="#confirmation-modal-{{ comment.id }}">
                     <i class="fa fa-trash-o"></i>
                     <span class="text">{{ _('Remove') }}</span>
                 </button>

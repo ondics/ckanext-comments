@@ -1,0 +1,61 @@
+  <div class="comment comment-state-{{ comment.state }}" id="comment-{{ comment.id }}">
+      <div class="comment-heading">
+          <div class="comment-authored">
+              <div class="author-avatar">
+                {% if comment.author_type == "user" %} {{ h.user_image(comment.author_name, size=26) }} {% else %} <i class="fa-regular fa-circle-user"></i> {% endif %}
+              </div>
+  
+              <div class="comment-meta">
+                  <div class="author-name">
+                      {{ comment.author_name or comment.author_fullname }}
+                  </div>
+                  <div class="comment-date">
+                      {{ h.time_ago_from_timestamp(comment.modified_at or comment.created_at) }}
+                  </div>
+              </div>
+          </div>
+          <div class="comment-actions">
+              {% if not comment.approved and h.check_access('comments_comment_approve', comment) %}
+                  <button aria-label="approve comment" title="{{ _('Approve') }}" class="btn btn-success comment-action approve-comment" data-id="{{ comment.id }}">
+                      <i class="fa fa-check"></i>
+                      <span class="text">{{ _('Approve') }}</span>
+                  </button>
+              {% endif %}
+                  <a href="/dataset/{{ comment.package_id }}#comment-{{ comment.id }}" title="{{ _('Zum Kommentar') }}" class="btn btn-default comment-action" data-id="{{ comment.id }}">
+                      <span class="text">{{ _('Zum Kommentar') }}</span>
+                  </a>
+              {% if h.check_access('comments_reply_create', {"reply_to_id": comment.id}) %}
+                  <button aria-label="reply to comment" title="{{ _('Reply') }}" class="btn btn-default comment-action reply-to-comment" data-id="{{ comment.id }}">
+                      <i class="fa fa-mail-reply"></i>
+                      <span class="text">{{ _('Reply') }}</span>
+                  </button>
+              {% endif %}
+              {% if h.check_access('comments_comment_update', comment) %}
+                  <button aria-label="edit comment" title="{{ _('Edit') }}" class="btn btn-default comment-action edit-comment" data-id="{{ comment.id }}">
+                      <i class="fa fa-edit"></i>
+                      <span class="text">{{ _('Edit') }}</span>
+                  </button>
+                  <button aria-label="save comment" title="{{ _('Save') }}" class="btn btn-default comment-action save-comment hidden" data-id="{{ comment.id }}">
+                      <i class="fa fa-edit"></i>
+                      <span class="text">{{ _('Save') }}</span>
+                  </button>
+              {% endif %}
+  
+              {% if h.check_access('comments_comment_delete', comment) %}
+                  <button aria-label="remove comment" type="button" class="btn btn-danger comment-action" data-bs-toggle="modal" data-bs-target="#confirmation-modal-{{ comment.id }}">
+                      <i class="fa fa-trash-o"></i>
+                      <span class="text">{{ _('Remove') }}</span>
+                  </button>
+                  {% snippet 'comments/snippets/confirmation.html', comment_id=comment.id %}
+              {% endif %}
+          </div>
+      </div>
+      <div class="comment-body">
+          <div class="comment-content">
+              {{- (comment.content)|replace('\n', '\n<br/>'|safe) -}}
+          </div>
+      </div>
+      <div class="comment-footer">
+  
+      </div>
+  </div>

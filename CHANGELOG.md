@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## TODO: CHANGELOG fertig aktualisieren
+
+## 05-05-2025:
+
+* ENH: Kommentare im Draftstatus aus dashboard entfernt, sofern keine vorhanden
+* ENH: Kommentar-Löschen Button rot hinterlegt
+* ENH: Kommentar-Dashboard in diese Extension verlegt
+* ENH: Angabe eines Namens beim Kommentarerstellen als Gast verpflichtend
+* ENH: Überprüfung Gastautor Name auf Einzigartigkeit
+* ENH: Input Feld für Gastautor Name, bei Beantwortung eines Kommentars
 
 ## 01-10-2024:
 

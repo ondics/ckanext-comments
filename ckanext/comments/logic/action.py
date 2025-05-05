@@ -4,10 +4,13 @@ import ckan.lib.dictization as d
 import ckan.plugins.toolkit as tk
 from ckan.logic import validate
 import ckan.authz as authz
+import ckan.lib.helpers as h
 
 import ckanext.comments.logic.schema as schema
 from ckanext.comments.model import Comment, Thread
 from ckanext.comments.model.dictize import get_dictizer
+
+from ckan.model import Session
 
 from .. import config, signals
 
@@ -114,6 +117,28 @@ def thread_delete(context, data_dict):
     thread_dict = get_dictizer(type(thread))(thread, context)
     return thread_dict
 
+def update_guest_user_if_needed(data_dict):
+    if data_dict.get('author_type') != 'guest':
+        return
+
+    email = data_dict.get('author_email')
+    new_guest_user = data_dict.get('guest_user')
+    if not email or not new_guest_user:
+        return
+
+    # Finde bisherigen Kommentar mit derselben Email
+    existing_comment = (
+        Session.query(Comment)
+        .filter_by(author_email=email, author_type='guest')
+        .first()
+    )
+
+    if existing_comment and existing_comment.guest_user != new_guest_user:
+        # Update alle bisherigen Kommentare auf den neuen Namen
+        Session.query(Comment)\
+            .filter_by(author_email=email, author_type='guest')\
+            .update({Comment.guest_user: new_guest_user})
+        Session.commit()
 
 @action
 @validate(schema.comment_create)
@@ -128,6 +153,9 @@ def comment_create(context, data_dict):
         create_thread(bool, optional): create a new thread if it doesn't exist yet
     """
     tk.check_access("comments_comment_create", context, data_dict)
+
+    log.debug("######################################################### comment_create - data_dict")
+    log.debug(data_dict)
 
     if authz.auth_is_anon_user(context):
         data_dict["author_type"] = "guest"
@@ -173,11 +201,14 @@ def comment_create(context, data_dict):
         author = authz._get_user(author_id)
         data_dict["author_email"] = author.email
 
+    author_email = data_dict["author_email"]
+    author_type = data_dict["author_type"]
+
     comment = Comment(
         thread_id=thread_dict["id"],
         content=data_dict["content"],
-        author_email=data_dict["author_email"],
-        author_type=data_dict["author_type"],
+        author_email=author_email,
+        author_type=author_type,
         extras=data_dict["extras"],
         author_id=author_id,
         guest_user=guest_user,
@@ -194,6 +225,21 @@ def comment_create(context, data_dict):
     else:
         comment.author_id = None  # Keine User-ID setzen, wenn es ein Gast ist
         comment.guest_user = guest_user or data_dict.get("guest_user")
+
+    if author_type == 'guest' and guest_user and author_email:
+        # Suche, ob der guest_user schon existiert – mit anderer Email
+        existing = Session.query(Comment)\
+            .filter(Comment.guest_user == guest_user)\
+            .filter(Comment.author_email != author_email)\
+            .filter(Comment.author_type == 'guest')\
+            .first()
+
+        if existing:
+            # Username ist mit einer anderen Email belegt
+            h.flash_error("Der angegebene Gastautor wird bereits verwendet. Bitte verwenden Sie einen anderen Namen.")
+            return
+    
+    update_guest_user_if_needed(data_dict)
 
     if not config.approval_required():
         comment.approve()
