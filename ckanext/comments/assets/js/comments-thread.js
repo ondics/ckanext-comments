@@ -406,28 +406,42 @@ ckan.module("comments-thread", function ($) {
     },
     _onSubmit: function (e) {
       e.preventDefault();
-      var data = new FormData(e.target);
-      this._saveComment({ content: data.get("content"), author_email: data.get("author_email"), guest_user: data.get("guest_user"), create_thread: true });
+      var form = e.target;
+      var data = new FormData(form);
+    
+      this._saveComment({
+        content: data.get("content"),
+        author_email: data.get("author_email"),
+        guest_user: data.get("guest_user"),
+        create_thread: true
+      }, function () {
+        // Nach erfolgreichem Speichern leeren wir das Textfeld
+        form.querySelector("textarea").value = "";
+      });
     },
-    _saveComment: function (data) {
+    _saveComment: function (data, onSuccess) {
       if (!data.content) {
         return;
       }
-
+    
       data.subject_id = this.options.subjectId;
       data.subject_type = this.options.subjectType;
       var ajaxReload = this.options.ajaxReload;
-
+    
       this.sandbox.client.call(
         "POST",
         "comments_comment_create",
         data,
         function () {
-            if (ajaxReload) {
-                $(document).trigger("comments:changed");
-            } else {
-                window.location.reload();
-            }
+          if (typeof onSuccess === "function") {
+            onSuccess();
+          }
+    
+          if (ajaxReload) {
+            $(document).trigger("comments:changed");
+          } else {
+            window.location.reload();
+          }
         }
       );
     },

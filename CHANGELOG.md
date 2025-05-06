@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## TODO: CHANGELOG fertig aktualisieren
 
+## 06-05-2025:
+
+* ENH: Kommentar Sektion in Datensatzseite abgesetzt
+* ENH: neueste Kommentare werden im Dashboard oben angezeigt
+* ENH: Kommentar-Dashboard Texte angepasst
+* ENH: Kommentar-Dashboard um collapsable Dokumentation erweitert
+* ENH: nach Kommentarerstellung wird Text aus Textfeld entfernt
+
 ## 05-05-2025:
 
 * ENH: Kommentare im Draftstatus aus dashboard entfernt, sofern keine vorhanden

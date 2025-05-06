@@ -7,6 +7,8 @@ import ckan.plugins.toolkit as tk
 
 from ckanext.comments.model.thread import Subject
 
+from dateutil.parser import parse
+
 from . import config
 from .model import Comment
 
@@ -76,7 +78,15 @@ def enable_default_dataset_comments() -> bool:
 
 @helper
 def show_comment_list(status):
-    test =  tk.get_action("comments_comment_list")(data_dict={
+    comment_list =  tk.get_action("comments_comment_list")(data_dict={
         "state": status
     })
-    return test
+
+    # Sortieren: zuerst nach modified_at (falls vorhanden), sonst created_at – absteigend
+    comment_list.sort(key=get_timestamp, reverse=True)
+    return comment_list
+
+
+def get_timestamp(comment):
+    ts = comment.get("modified_at") or comment.get("created_at")
+    return parse(ts) if ts else datetime.min

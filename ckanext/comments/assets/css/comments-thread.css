@@ -78,3 +78,7 @@ a.btn.comment-action,
 a.btn.comment-action:visited {
     color: #000;
 }
+
+.comments-thread-div {
+  margin-top: 2rem;
+}

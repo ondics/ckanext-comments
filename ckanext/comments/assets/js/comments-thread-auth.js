@@ -189,35 +189,41 @@ ckan.module("comments-thread-auth", function ($) {
         );
       },
       _onSubmit: function (e) {
-        console.log("hallo");
         e.preventDefault();
         var data = new FormData(e.target);
-        for (var [key, value] of data.entries()) {
-            console.log(key + ": " + value);
-        }
-        this._saveComment({ content: data.get("content"), create_thread: true });
+        var $textarea = this.$("#comment-content"); // Hier dein Textfeld holen
+      
+        this._saveComment(
+          { content: data.get("content"), create_thread: true },
+          function () {
+            $textarea.val(""); // Textfeld leeren nach erfolgreichem Speichern
+          }
+        );
       },
-      _saveComment: function (data) {
+      _saveComment: function (data, onSuccess) {
         if (!data.content) {
           return;
         }
-  
+      
         data.subject_id = this.options.subjectId;
         data.subject_type = this.options.subjectType;
         var ajaxReload = this.options.ajaxReload;
-  
+      
         this.sandbox.client.call(
           "POST",
           "comments_comment_create",
           data,
           function () {
-              if (ajaxReload) {
-                  $(document).trigger("comments:changed");
-              } else {
-                  window.location.reload();
-              }
+            if (typeof onSuccess === "function") {
+              onSuccess();
+            }
+            if (ajaxReload) {
+              $(document).trigger("comments:changed");
+            } else {
+              window.location.reload();
+            }
           }
         );
-      },
+      },      
     };
   });
