@@ -174,7 +174,7 @@ ckan.module("comments-thread", function ($) {
             url: "/api/request_pin",
             method: "POST",
             contentType: "application/json",
-            data: JSON.stringify({ email: e.email }),
+            data: JSON.stringify({ email: e.email, name: e.name }),
             success: function () {
               console.log("PIN erfolgreich versendet an:", e.email);
               // Daten für spätere Speicherung merken
@@ -213,14 +213,17 @@ ckan.module("comments-thread", function ($) {
         success: (response) => {
           // Wenn die PIN korrekt ist, speichere den Kommentar
           const data = new FormData(formElement); // Hole Formulardaten
+          const $textarea = this.$("#comment-content");
           this._saveComment({
             content: data.get("content"),
             author_email: data.get("author_email"),
             guest_user: data.get("guest_user"),
-            create_thread: true,
+            create_thread: true
+          }, function () {
+            $textarea.val(""); // <- Textarea leeren
+            $('#pinModal').modal('hide'); // Modal schließen
+            alert('Kommentar erfolgreich gespeichert!');
           });
-          $('#pinModal').modal('hide'); // Schließe das PIN-Modal
-          alert('Kommentar erfolgreich gespeichert!');
         },
         error: function () {
           alert('Ungültiger oder abgelaufener PIN. Bitte versuchen Sie es erneut.');
@@ -408,6 +411,7 @@ ckan.module("comments-thread", function ($) {
       e.preventDefault();
       var form = e.target;
       var data = new FormData(form);
+      var $textarea = this.$("#comment-content"); // Hier dein Textfeld holen
     
       this._saveComment({
         content: data.get("content"),
@@ -415,8 +419,7 @@ ckan.module("comments-thread", function ($) {
         guest_user: data.get("guest_user"),
         create_thread: true
       }, function () {
-        // Nach erfolgreichem Speichern leeren wir das Textfeld
-        form.querySelector("textarea").value = "";
+        $textarea.val(""); // Textfeld leeren nach erfolgreichem Speichern
       });
     },
     _saveComment: function (data, onSuccess) {
@@ -433,13 +436,15 @@ ckan.module("comments-thread", function ($) {
         "comments_comment_create",
         data,
         function () {
-          if (typeof onSuccess === "function") {
-            onSuccess();
-          }
-    
           if (ajaxReload) {
+            if (typeof onSuccess === "function") {
+              onSuccess();
+            }
             $(document).trigger("comments:changed");
           } else {
+            if (typeof onSuccess === "function") {
+              onSuccess();
+            }
             window.location.reload();
           }
         }
