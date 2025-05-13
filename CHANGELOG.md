@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## TODO: CHANGELOG fertig aktualisieren
 
+## 13-05-2025:
+
+* FIX: javascript modul in kommentar-dashboard
+
 ## 06-05-2025:
 
 * ENH: Kommentar Sektion in Datensatzseite abgesetzt

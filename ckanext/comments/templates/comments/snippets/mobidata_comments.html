@@ -1,10 +1,10 @@
     
     {% set thread = h.comments_thread_for(subject_id, subject_type) %}
     
-    {% asset 'comments/comments-thread' %}
+    {% asset 'comments/comments-thread-auth' %}
     {% asset 'comments/comments-thread-styles' %}
     
-    <div data-module="comments-thread" data-module-subject-id="{{ thread.subject_id }}" data-module-subject-type="{{ thread.subject_type }}">
+    <div data-module="comments-thread-auth" data-module-subject-id="{{ thread.subject_id }}" data-module-subject-type="{{ thread.subject_type }}">
         {% if comment %}
             <ul class="list-unstyled comments-thread">
                     {% if comment['state'] == status %}

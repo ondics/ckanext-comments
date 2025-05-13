@@ -15,7 +15,51 @@
       </p>
       <div class="collapse" id="commentsdocs">
         <div class="card card-body">
-          Noch leer
+          <p>Auf dieser Seite werden alle Kommentare, nach Datum sortiert, angezeigt.
+          Als Systemadministrator können Sie diese beantworten, bearbeiten oder löschen:</p>
+          <ul style="list-style-type: circle;">
+            <li><code>Zum Kommentar</code>: Link zum Kommentar auf der Datensatzseite</li>
+            <li><code>Antworten</code>: Auf Kommentar antworten</li>
+            <li><code>Bearbeiten</code>: Kommentar bearbeiten</li>
+            <li><code>Speichern</code>: bearbeiteten Kommentar abspeichern</li>
+            <li><code>Entfernen</code>: Kommentar komplett entfernen</li>
+          </ul>
+          <h3>Kommentare verfassen</h3>
+          <p>Jeder Besucher dieser Website kann Kommentare erstellen und auf bereits bestehende Kommentare antworten, 
+          diese sind dann auch sofort öffentlich sichtbar.
+          </p>
+          <p><strong>Registrierte Benutzer</strong> schreiben Kommentare unter ihrem Accountnamen und 
+          können ihre eigenen Kommentare jederzeit selbstständig bearbeiten oder löschen.</p>
+          <p><strong>Anonyme Benutzer (auch Gastautoren)</strong> müssen bei der Erstellung einen Benutzernamen und eine E-Mail Adresse angeben.
+          Zur Verifizierung erhält der Gastautor dann eine E-Mail mit einer 6-stelligen PIN an die angegebene Adresse.
+          Erst nach Eingabe und Bestätigung der PIN im Popup Fenster wird der Kommentar dann gespeichert.</p>
+          <h3>Sicherheitsmaßnahmen</h3>
+          <ul style="list-style-type: circle;">
+            <li>SPAM-Schutz durch PIN-Verifikation via E-Mail</li>
+            <li>Eindeutige Identifizierung: Keine doppelten Benutzernamen. Wird ein Benutzername ausgewählt, 
+              der bereits von einem anderen Gastautor verwendet wurde, schlägt die Erstellung fehl.</li>
+            <li>Benutzername und E-Mail sind eindeutig: Wird bei gleicher E-Mail Adresse ein anderer Benutzername ausgewählt,
+              wird der Benutzername rückwirkend für alle bisherigen Kommentare mit dieser E-Mail Adresse aktualisiert.</li>
+          </ul>
+          <br>
+          <h3>Konfiguration</h3>
+          <p>Zu dieser Kommentar-Erweiterung gibt es Einstellungsmöglichkeiten in der <code>.env</code> dieser Webseite.
+            Die Variablen beginnen mit <code>CKANEXT__COMMENTS__</code>.
+            Zum Beispiel:
+          </p>
+          <ul style="list-style-type: circle;">
+            <li><code>CKANEXT__COMMENTS__REQUIRE_APPROVAL=true</code>
+              <ul><li>wenn true, dann muss ein Systemadministrator den Kommentar, auf dieser Seite, erst akzeptieren, 
+                bevor er veröffentlicht wird</li></ul>
+            </li>
+            <li><code>CKANEXT__COMMENTS__APPROVED_EDITS_BY_AUTHOR=false</code>
+              <ul><li>wenn false, können registrierte Benutzer ihre eigenen, öffentlichen Kommentare nicht mehr bearbeiten.</li>
+            </li></ul>
+          </ul>
+          <ul>
+            <li></li>
+          </ul>
+          <p></p>
         </div>
       </div>
 </div>
