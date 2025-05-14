@@ -3,9 +3,15 @@
 {% block primary_content_inner %}
 <h2>{{ _("Kommentare") }}</h2>
 <br>
+{% if h.comments_enable_require_approval() %}
 <p>
-    {{ _("Alle Kommentare und Änderungen sind sofort öffentlich sichtbar.") }}
+    {{ _("Kommentare werden erst nach Klick auf den Button Annehmen veröffentlicht.") }}
 </p>
+{% else %}
+<p>
+  {{ _("Alle Kommentare und Änderungen sind sofort öffentlich sichtbar.") }}
+</p>
+{% endif %}
 <br>
 <div>
     <p>
@@ -26,7 +32,11 @@
           </ul>
           <h3>Kommentare verfassen</h3>
           <p>Jeder Besucher dieser Website kann Kommentare erstellen und auf bereits bestehende Kommentare antworten, 
+          {% if h.comments_enable_require_approval() %}
+          diese werden aber erst nach Klick auf den Button Annehmen für alle Webseiten Besucher veröffentlicht.
+          {% else %}
           diese sind dann auch sofort öffentlich sichtbar.
+          {% endif %}
           </p>
           <p><strong>Registrierte Benutzer</strong> schreiben Kommentare unter ihrem Accountnamen und 
           können ihre eigenen Kommentare jederzeit selbstständig bearbeiten oder löschen.</p>
@@ -75,7 +85,7 @@
 </div>
 <br>
 {% endif %}
-{% if approved_list and draft_list %}
+{% if approved_list and h.comments_enable_require_approval() %}
 <h3>{{ _("Liste mit Kommentaren im Status Angenommen") }}</h3>
 {% endif %}
 {% if approved_list %}

@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## TODO: CHANGELOG fertig aktualisieren
 
+## 14-05-2025:
+
+* ENH: Kommentarfreigabe wieder eingebaut
+
 ## 13-05-2025:
 
 * FIX: javascript modul in kommentar-dashboard

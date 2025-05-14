@@ -86,6 +86,9 @@ def show_comment_list(status):
     comment_list.sort(key=get_timestamp, reverse=True)
     return comment_list
 
+@helper
+def enable_require_approval() -> bool:
+    return config.approval_required()
 
 def get_timestamp(comment):
     ts = comment.get("modified_at") or comment.get("created_at")
