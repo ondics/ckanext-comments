@@ -222,7 +222,7 @@ ckan.module("comments-thread", function ($) {
           }, function () {
             $textarea.val(""); // <- Textarea leeren
             $('#pinModal').modal('hide'); // Modal schließen
-            alert('Kommentar erfolgreich gespeichert!');
+            alert('Ihr Kommentar wurde gespeichert, und muss noch vom MobiData BW Team freigegeben werden.');
           });
         },
         error: function () {

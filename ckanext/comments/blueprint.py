@@ -41,7 +41,7 @@ def request_pin():
 
     # Sende die Bestätigungsmail
     subject = (f"{author_name} - Bestätige deine E-Mail-Adresse")
-    body = f"Bitte geben Sie den folgenden PIN ein, um deine E-Mail-Adresse zu bestätigen und den Kommentar zu speichern: {pin}"
+    body = f"Bitte geben Sie die folgende PIN ein, um Ihre E-Mail-Adresse zu bestätigen und Ihren Kommentar zu speichern: {pin}"
     body_html = body
 
     try:
