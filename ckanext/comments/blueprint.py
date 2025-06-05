@@ -40,7 +40,7 @@ def request_pin():
     my_url = toolkit.config.get("ckan.site_url")
 
     # Sende die Bestätigungsmail
-    subject = (f"{author_name} - Bestätige deine E-Mail-Adresse")
+    subject = (f"{author_name} - Bestätigen Sie Ihre E-Mail-Adresse")
     body = f"Bitte geben Sie die folgende PIN ein, um Ihre E-Mail-Adresse zu bestätigen und Ihren Kommentar zu speichern: {pin}"
     body_html = body
 
