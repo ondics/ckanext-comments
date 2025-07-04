@@ -325,7 +325,7 @@ ckan.module("comments-thread", function ($) {
           guestUserInput,
           emailInput,
           $('<p class="modal-comment-warning">').text(
-            'Achtung: Als Gastautor, können Sie Ihren Kommentar hinterher nicht mehr bearbeiten oder löschen!'
+            'Kommentare können im Nachgang nicht bearbeitet werden.'
           ),
           $("<div>")
             .addClass("reply-actions")

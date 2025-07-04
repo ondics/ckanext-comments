@@ -41,10 +41,7 @@
             <input type="email" class="form-control" id="authoremail" placeholder="name@example.com" required>
           </div>
         </form>
-        <p class="modal-comment-warning">Achtung: Als Gastautor, können Sie Ihren Kommentar hinterher nicht mehr bearbeiten oder löschen!</p>
-        {% if h.comments_enable_require_approval() %}
-          <p class="modal-comment-warning">Ihr Kommentar wird erst nach einer manuellen Überprüfung öffentlich sichtbar gestellt!</p>
-        {% endif %}
+        <p class="modal-comment-warning">Kommentare können im Nachgang nicht bearbeitet werden. {% if h.comments_enable_require_approval() %}Die Veröffentlichung erfolgt nach einer Überprüfung.{% endif %}</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary close" data-dismiss="modal">Abbrechen</button>
