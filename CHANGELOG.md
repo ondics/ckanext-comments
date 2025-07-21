@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## TODO: CHANGELOG fertig aktualisieren
 
+## 21-07-2025:
+
+* ENH: Kommentar Texte angepasst
+
 ## 03-06-2025:
 
 * ENH: Texte zur Kommentarerstellung angepasst

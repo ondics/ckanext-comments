@@ -82,3 +82,19 @@ a.btn.comment-action:visited {
 .comments-thread-div {
   margin-top: 2rem;
 }
+
+/* Kommentar zum Datensatz Text verkleinern */
+legend {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+/* Label Text über Kommentar-Textfeld entfernen */
+#main-form.comment-form label.form-label {
+  display: none;
+}
+
+/* Überschrift "Bestätigungscode eingeben" entfernt */
+.modal-header.hidden-header {
+  display: none;
+}

@@ -28,16 +28,16 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="emailModalLabel">E-Mail eingeben</h5>
+        <h5 class="modal-title" id="emailModalLabel">Bitte geben Sie Ihren Namen und Ihre E-Mail-Adresse an, um den Kommentar zu speichern</h5>
       </div>
       <div class="modal-body">
         <form id="email-form">
           <div class="form-group">
-            <label for="author_id">Autor Name</label>
+            <label for="author_id">Name</label>
             <input type="text" class="form-control" id="guestuser" placeholder="username" required>
           </div>
           <div class="form-group">
-            <label for="author_email">Autor E-Mail</label>
+            <label for="author_email">E-Mail-Adresse</label>
             <input type="email" class="form-control" id="authoremail" placeholder="name@example.com" required>
           </div>
         </form>
@@ -55,12 +55,12 @@
 <div class="modal fade" id="pinModal" tabindex="-1" role="dialog" aria-labelledby="pinModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
-      <div class="modal-header">
+      <div class="modal-header hidden-header">
         <h5 class="modal-title" id="pinModalLabel">Bestätigungscode eingeben</h5>
       </div>
       <div class="modal-body">
         <div class="form-group">
-          <label for="pin-input">Bitte geben Sie den Bestätigungscode ein, den Sie per E-Mail erhalten haben</label>
+          <label for="pin-input">Bitte geben Sie den Bestätigungscode ein, der Ihnen per E-Mail zugeschickt wurde</label>
           <input type="text" class="form-control" id="pin-input" maxlength="6" placeholder="123456" required>
         </div>
       </div>
