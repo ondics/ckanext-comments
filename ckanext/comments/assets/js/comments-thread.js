@@ -64,6 +64,10 @@ ckan.module("comments-thread", function ($) {
     _onSaveButtonClick: function (e) {
       e.preventDefault(); // Verhindere das Standardverhalten des Buttons
       // Öffne das Modal für die E-Mail-Eingabe
+      if (!$('#comment-privacy-check').is(':checked')) {
+        alert('Bitte stimmen Sie der Verarbeitung der personenbezogenen Daten zu.');
+        return;
+      }
       $('#emailModal').modal('show'); 
     },
 
@@ -153,7 +157,7 @@ ckan.module("comments-thread", function ($) {
     },
 
     _onReplySave: function (e) {
-      if (!$('#comment-privacy-check').is(':checked')) {
+      if (!$('#comment-reply-privacy-check').is(':checked')) {
         alert('Bitte stimmen Sie der Verarbeitung der personenbezogenen Daten zu.');
         return;
       }
@@ -325,8 +329,8 @@ ckan.module("comments-thread", function ($) {
       var privacyCheckbox = $(`
        <div class="form-group">
           <div class="controls">
-            <label class="checkbox" for="comment-privacy-check">
-              <input id="comment-privacy-check" type="checkbox" name="privacy-check" value="" style="width:auto; margin-top:20px" required>
+            <label class="checkbox" for="comment-reply-privacy-check">
+              <input id="comment-reply-privacy-check" type="checkbox" name="privacy-check" value="" style="width:auto; margin-top:20px" required>
                 Ich stimme der Verarbeitung der personenbezogenen Daten durch die NVBW - Nahverkehrsgesellschaft Baden-Württemberg mbH zu 
                 <a href="/pages/datenschutz" target="_blank">Zur Datenschutzerklärung</a>
                 <span title="Dieses Feld ist erforderlich" class="control-required">*</span>     
