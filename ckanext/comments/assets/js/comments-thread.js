@@ -153,7 +153,10 @@ ckan.module("comments-thread", function ($) {
     },
 
     _onReplySave: function (e) {
-
+      if (!$('#comment-privacy-check').is(':checked')) {
+        alert('Bitte stimmen Sie der Verarbeitung der personenbezogenen Daten zu.');
+        return;
+      }
       // Schritt 1: Prüfe, ob der guest_user-Name schon vergeben ist
       $.ajax({
         url: '/api/check_guest_user',  // Muss serverseitig vorhanden sein
@@ -319,11 +322,25 @@ ckan.module("comments-thread", function ($) {
         placeholder: this._("Deine E-Mail Adresse"),
         class: 'form-control reply-email-input',
       });
+      var privacyCheckbox = $(`
+       <div class="form-group">
+          <div class="controls">
+            <label class="checkbox" for="comment-privacy-check">
+              <input id="comment-privacy-check" type="checkbox" name="privacy-check" value="" style="width:auto; margin-top:20px" required>
+                Ich stimme der Verarbeitung der personenbezogenen Daten durch die NVBW - Nahverkehrsgesellschaft Baden-Württemberg mbH zu 
+                <a href="/pages/datenschutz" target="_blank">Zur Datenschutzerklärung</a>
+                <span title="Dieses Feld ist erforderlich" class="control-required">*</span>     
+            </label>    
+          </div>
+        </div>
+      `);
+
       comment.find(".comment-footer").append(
         $('<div class="control-full reply-textarea-wrapper">').append(
           textarea,
           guestUserInput,
           emailInput,
+          privacyCheckbox,
           $('<p class="modal-comment-warning">').text(
             'Kommentare können im Nachgang nicht bearbeitet werden.'
           ),

@@ -12,6 +12,15 @@
   {% if not g.user %}
   <input type="hidden" name="author_email" id="author_email">
   <input type="hidden" name="guest_user" id="guest_user">
+  <div class="form-group ">
+    <div class="controls">
+      <label class="checkbox" for="comment-privacy-check">
+        <input id="comment-privacy-check" type="checkbox" name="privacy-check" value="" required>
+          Ich stimme der Verarbeitung der personenbezogenen Daten durch die NVBW - Nahverkehrsgesellschaft Baden-Württemberg mbH zu. <a href="/pages/datenschutz" target="_blank">Zur Datenschutzerklärung</a>
+          <span title="Dieses Feld ist erforderlich" class="control-required">*</span>     
+      </label>    
+    </div>
+  </div>
   {% endif %}
   <div class="form-group control-full">
     <button type="submit" {% if not g.user %} style="display: none!important;" {% endif %} class="btn btn-primary">
